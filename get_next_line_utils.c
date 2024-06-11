@@ -12,45 +12,39 @@
 
 #include "get_next_line.h"
 
-char	*ft_strchr(const char *s, int c)
+char	*ft_strchr(t_gnl *gnl, int c)
 {
 	char	ch;
 	int		i;
 
 	i = 0;
 	ch = c;
-	while (s[i])
+	while (gnl->buffer[i])
 	{
-		if (s[i] == ch)
-			return ((char *)s + i);
+		if (gnl->buffer[i] == ch)
+			return (gnl->pos_nl = (char *)gnl->buffer + i);
 		i++;
 	}
-	if (c == '\0')
-		return ((char *)s + i);
+	return (gnl->pos_nl = NULL);
+}
+
+t_gnl	*singleton_gnl(void)
+{
+	static t_gnl	gnl = {0};
+
+	return (&gnl);
+}
+
+void	*free_buffer(void)
+{
+	t_gnl	*gnl;
+
+	gnl = singleton_gnl();
+	if (gnl->buffer)
+		(free(gnl->buffer), gnl->buffer = NULL);
+	if (gnl->s)
+		(free(gnl->s), gnl->s = NULL);
 	return (NULL);
-}
-
-t_gnl *singleton_gnl(void)
-{
-    static t_gnl gnl = {0};
-
-    gnl.new_line = NULL;
-    gnl.size_buffer = ft_strlen(gnl.buffer);
-    return(&gnl);
-}
-
-void *free_buffer(void)
-{
-    t_gnl *gnl;
-    gnl = singleton_gnl();
-    if(gnl->buffer)
-        (free(gnl->buffer), gnl->buffer = NULL);
-    if(gnl->new_line)
-        (free(gnl->new_line), gnl->new_line = NULL);
-    if(gnl->s)
-        (free(gnl->s), gnl->s = NULL);
-    gnl->status = 1;
-    return(NULL);
 }
 
 char	*ft_freestrjoin(char *s1, char *s2, size_t size)
@@ -76,28 +70,14 @@ char	*ft_freestrjoin(char *s1, char *s2, size_t size)
 	return (str);
 }
 
-void	*ft_calloc(size_t nmemb, size_t size)
+void	*free_struct(t_gnl *gnl)
 {
-	void	*ptr;
-    unsigned char    *ptr2;
-    size_t n;
-
-	if (nmemb == 0 || size == 0)
-	{
-		nmemb = 1;
-		size = 1;
-	}
-	if (nmemb > SIZE_MAX / size)
-		return (NULL);
-	ptr = (void *)malloc(nmemb * size);
-	if (!ptr)
-		return (NULL);
-    ptr2 = (unsigned char*) ptr;
-    n = nmemb * size;
-	while (n > 0)
-	{
-		*ptr2++ = '\0';
-		n--;
-	}
-	return (ptr);
+	if (gnl->buffer)
+		(free(gnl->buffer), gnl->buffer = NULL);
+	if (gnl->new_line)
+		(free(gnl->new_line), gnl->new_line = NULL);
+	if (gnl->s)
+		(free(gnl->s), gnl->s = NULL);
+	gnl->status = 1;
+	return (NULL);
 }

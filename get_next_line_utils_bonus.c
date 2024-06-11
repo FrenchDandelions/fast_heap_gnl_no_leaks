@@ -5,51 +5,51 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: thole <thole@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/10 23:25:17 by thole             #+#    #+#             */
-/*   Updated: 2024/06/11 01:32:38 by thole            ###   ########.fr       */
+/*   Created: 2024/06/11 14:20:19 by thole             #+#    #+#             */
+/*   Updated: 2024/06/11 14:20:23 by thole            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
 
-char	*ft_strchr(const char *s, int c)
+char	*ft_strchr(t_gnl *gnl, int c)
 {
 	char	ch;
 	int		i;
 
 	i = 0;
 	ch = c;
-	while (s[i])
+	while (gnl->buffer[gnl->fd][i])
 	{
-		if (s[i] == ch)
-			return ((char *)s + i);
+		if (gnl->buffer[gnl->fd][i] == ch)
+			return (gnl->pos_nl = (char *)gnl->buffer[gnl->fd] + i);
 		i++;
 	}
-	if (c == '\0')
-		return ((char *)s + i);
+	return (gnl->pos_nl = NULL);
+}
+
+t_gnl	*singleton_gnl(void)
+{
+	static t_gnl	gnl = {0};
+
+	return (&gnl);
+}
+
+void	*free_buffer(void)
+{
+	t_gnl	*gnl;
+
+	gnl = singleton_gnl();
+	gnl->fd = 0;
+	while (gnl->fd < 1025)
+	{
+		free(gnl->buffer[gnl->fd]);
+		gnl->buffer[gnl->fd] = NULL;
+		gnl->fd++;
+	}
+	if (gnl->s)
+		(free(gnl->s), gnl->s = NULL);
 	return (NULL);
-}
-
-t_gnl *singleton_gnl(void)
-{
-    static t_gnl gnl = {0};
-
-    gnl.new_line = NULL;
-    return(&gnl);
-}
-
-void *free_buffer(void)
-{
-    t_gnl *gnl;
-    gnl = singleton_gnl();
-    if(gnl->buffer[gnl->fd])
-        (free(gnl->buffer[gnl->fd]), gnl->buffer[gnl->fd] = NULL);
-    if(gnl->new_line)
-        (free(gnl->new_line), gnl->new_line = NULL);
-    if(gnl->s)
-        (free(gnl->s), gnl->s = NULL);
-    gnl->status = 1;
-    return(NULL);
 }
 
 char	*ft_freestrjoin(char *s1, char *s2, size_t size)
@@ -75,28 +75,14 @@ char	*ft_freestrjoin(char *s1, char *s2, size_t size)
 	return (str);
 }
 
-void	*ft_calloc(size_t nmemb, size_t size)
+void	*free_struct(t_gnl *gnl)
 {
-	void	*ptr;
-    unsigned char    *ptr2;
-    size_t n;
-
-	if (nmemb == 0 || size == 0)
-	{
-		nmemb = 1;
-		size = 1;
-	}
-	if (nmemb > SIZE_MAX / size)
-		return (NULL);
-	ptr = (void *)malloc(nmemb * size);
-	if (!ptr)
-		return (NULL);
-    ptr2 = (unsigned char*) ptr;
-    n = nmemb * size;
-	while (n > 0)
-	{
-		*ptr2++ = '\0';
-		n--;
-	}
-	return (ptr);
+	if (gnl->buffer[gnl->fd])
+		(free(gnl->buffer[gnl->fd]), gnl->buffer[gnl->fd] = NULL);
+	if (gnl->new_line)
+		(free(gnl->new_line), gnl->new_line = NULL);
+	if (gnl->s)
+		(free(gnl->s), gnl->s = NULL);
+	gnl->status = 1;
+	return (NULL);
 }
