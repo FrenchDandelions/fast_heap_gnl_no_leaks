@@ -142,27 +142,27 @@ char	*get_next_line(int fd)
 	return (gnl->new_line);
 }
 
-int	main(void)
-{
-	int		fd;
-	int		fd2;
-	char	*str;
+// int	main(void)
+// {
+// 	int		fd;
+// 	int		fd2;
+// 	char	*str;
 
-	fd = open("bible.txt", O_RDONLY);
-	if (fd == -1)
-		return (2);
-	fd2 = open("test.txt", O_RDONLY);
-	if (fd == -1)
-		return (2);
-	str = get_next_line(fd);
-	printf("%s", str);
-	free(str);
-	while ((str = get_next_line(fd2)) != NULL)
-	{
-		printf("%s", str);
-		free(str);
-	}
-	close(fd);
-	close(fd2);
-	return (0);
-}
+// 	fd = open("bible.txt", O_RDONLY);
+// 	if (fd == -1)
+// 		return (2);
+// 	fd2 = open("test.txt", O_RDONLY);
+// 	if (fd == -1)
+// 		return (2);
+// 	str = get_next_line(fd);
+// 	printf("%s", str);
+// 	free(str);
+// 	while ((str = get_next_line(fd2)) != NULL)
+// 	{
+// 		printf("%s", str);
+// 		free(str);
+// 	}
+// 	close(fd);
+// 	close(fd2);
+// 	return (0);
+// }

@@ -140,22 +140,22 @@ char	*get_next_line(int fd)
 	return (gnl->new_line);
 }
 
-int	main(void)
-{
-	int		fd;
-	char	*str;
+// int	main(void)
+// {
+// 	int		fd;
+// 	char	*str;
 
-	fd = open("bible.txt", O_RDONLY);
-	if (fd == -1)
-		return (2);
-	// str = get_next_line(fd);
-	// free(str);
-	// return (0);
-	while ((str = get_next_line(fd)) != NULL)
-	{
-		printf("%s", str);
-		free(str);
-	}
-	close(fd);
-	return (0);
-}
+// 	fd = open("bible.txt", O_RDONLY);
+// 	if (fd == -1)
+// 		return (2);
+// 	// str = get_next_line(fd);
+// 	// free(str);
+// 	// return (0);
+// 	while ((str = get_next_line(fd)) != NULL)
+// 	{
+// 		printf("%s", str);
+// 		free(str);
+// 	}
+// 	close(fd);
+// 	return (0);
+// }
